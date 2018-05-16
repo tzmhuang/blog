@@ -15,7 +15,7 @@
 baseURL = "https://pedantic-archimedes-af6351.netlify.com"
 languageCode = "en-us"
 defaultContentLanguage = "en-us"
-title = "Hugo tranquilpeak theme"
+title = "HZM"
 theme = "hugo-tranquilpeak-theme"
 disqusShortname = "hugo-tranquilpeak-theme"
 # googleAnalytics = "UA-123-45"
@@ -31,12 +31,12 @@ canonifyurls = true
   archive = "archives"
 
 [author]
-  name = "Firstname Lastname"
-  bio = "Super bio with markdown support **COOL**"
-  job = "Your job title"
-  location = "France"
+  name = "Huang Zanming"
+  bio = "22yo fresh graduate from HKU. Major in Data Analytics and Minor in Mathematics "
+  job = "Currently unemployed"
+  location = "Hong Kong"
   # Your Gravatar email. Overwrite `author.picture` everywhere in the blog
-  gravatarEmail = "thibaud.lepretre@gmail.com"
+  gravatarEmail = "huangtom2@gmail.com"
   # Your profile picture
   # Overwritten by your gravatar image if `author.gravatarEmail` is filled
   picture = "https://cdn1.iconfinder.com/data/icons/ninja-things-1/1772/ninja-simple-512.png"
