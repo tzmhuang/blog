@@ -1,0 +1,72 @@
+---
+title: Visualization of Migration Data with Chorddiag
+author: Huang Zanming
+date: '2018-05-17'
+slug: visualization-with-chorddiag
+thumbnailImage: //res.cloudinary.com/tzmhuang/image/upload/v1526567979/Screen_Shot_2018-05-17_at_10.37.36_PM.png
+thumbnailImagePosition: "left"
+coverImage: None
+coverSize: partial
+categories:
+  - R
+tags:
+  - visualization
+  - Chorddiag
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, eval = F)
+```
+
+Chord diagram is super useful when we are trying to visualize relatinonal data. For this simple exercise, I used the package chorddiag on the US cross-states migration data in the year 2016. I also used the package reshape for data formatting. This is done as an assignment for course Big Data Analytics.
+
+
+
+```{r}
+library(reshape)
+library(dplyr)
+library(chorddiag)
+dat = read.csv("migration2016.csv")
+states = read.csv("states_chord.csv")
+```
+
+
+```{r, eval = T,include=F}
+library(reshape)
+library(dplyr)
+library(chorddiag)
+dat = read.csv("~/Desktop/post_data/migration_chorddiag/migration2016.csv")
+states = read.csv("~/Desktop/post_data/migration_chorddiag/states_chord.csv")
+head(dat)
+head(states)
+```
+
+
+```{r, eval=T}
+tmp = melt(dat)
+colnames(tmp)[2] = "From"
+tmp$To = gsub("\\."," ",tmp$To )
+tmp$From = gsub("\\."," ",tmp$From )
+tmp$To = gsub(" $","",tmp$To )
+tmp$From = gsub(" $","",tmp$From )
+ID_From = NULL
+ID_To = NULL
+for (i in 1:length(tmp$To)){
+  ID_From = c(ID_From, states[states$States==(tmp[i,2]),1])
+  ID_To = c(ID_To, states[states$States==(tmp[i,1]),1])
+}
+id = data.frame(ID_From,ID_To)
+a = cbind(tmp,id)
+
+a = arrange(a, ID_From, ID_To)
+b = reshape(a[,1:3], idvar = "To", timevar = "From", direction = "wide")
+state_names = b[,1]
+b = b[,-1]
+rownames(b) = state_names
+colnames(b) = state_names
+b = as.matrix(b)
+
+
+chorddiag(b, groupColors = states$Color, groupnamePadding = 4, showTicks = FALSE, fadeLevel = 0.05,ticklabelFontsize = 5,groupnameFontsize = 12,chordedgeColor = states$Color)
+```
+

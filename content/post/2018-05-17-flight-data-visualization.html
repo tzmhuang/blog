@@ -6,11 +6,14 @@ slug: flight-data-visualization
 thumbnailImage: //res.cloudinary.com/tzmhuang/image/upload/c_scale,w_256/v1526556741/Screen_Shot_2018-05-17_at_7.19.18_PM.png
 thumbnailImagePosition: "left"
 coverImage: //i.imgur.com/RMpd8uE.png
+coverSize: partial
 metaAlignment: center
 categories:
   - R
 tags:
   - visualization
+  - ggplot2
+  - threejs
 ---
 
 <script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
@@ -21,8 +24,8 @@ tags:
 <script src="/rmarkdown-libs/globe-binding/globe.js"></script>
 
 
-<p>Lets visualize the flight routes data from openflights.org. For this I used the airports.dat and routes.dat, one contains information of airports around the world and the other contains flights data of Jan 2012. This was done as an assignment for my big data analytics course in HKU.</p>
-<p>Due to limited computation power only flight routes from 3 airlines are visualized, but it can be scaled up easily. The airlines im visualizing are Cathay, Emirates and Delta, with the flights from Cathay shown in green, Emirates in red and Delta in blue.</p>
+<p>Lets visualize the flight data from openflights.org. For this I used the airports.dat and routes.dat, one contains information of airports around the world, and the other contains the flight data of Jan 2012. This was done as an assignment for my big data analytics course in HKU.</p>
+<p>Due to limited computation power only flight routes from 3 airlines are visualized, but it can be scaled up easily. The airlines visualized are Cathay, Emirates and Delta, with the flights from Cathay shown in green, Emirates in red and Delta in blue.</p>
 <div id="flight-visulization-with-ggplot2" class="section level4">
 <h4>Flight visulization with ggplot2</h4>
 <pre class="r"><code>library(maps)
