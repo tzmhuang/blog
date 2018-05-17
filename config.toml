@@ -87,7 +87,7 @@ ignoreFiles = ["\\.Rmd$", "_files$", "_cache$"]
   identifier = "Linkedin"
   name = "Linkedin"
   pre = "<i class=\"sidebar-button-icon fa fa-lg fa-linkedin\"></i>"
-  url = "www.linkedin.com/in/tom-huang-6099ba101"
+  url = "http://www.linkedin.com/in/tom-huang-6099ba101"
 
 [[menu.misc]]
   weight = 1
