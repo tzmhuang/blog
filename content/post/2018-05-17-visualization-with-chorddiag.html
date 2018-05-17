@@ -28,14 +28,82 @@ library(dplyr)
 library(chorddiag)
 dat = read.csv(&quot;migration2016.csv&quot;)
 states = read.csv(&quot;states_chord.csv&quot;)</code></pre>
+<p>The data looks likes this:</p>
+<pre class="r"><code>head(dat)
+##           To Alabama Alaska Arizona Arkansas California Colorado
+## 1    Alabama      NA    576    1022      495       6611     2177
+## 2     Alaska     423     NA    1176       65       3593     1401
+## 3    Arizona     894   1946      NA     1205      64756    11895
+## 4   Arkansas    2057    103     836       NA       4026     3459
+## 5 California    3045   4206   33757     4282         NA    22540
+## 6   Colorado    2328   1698   13015      808      26909       NA
+##   Connecticut Delaware District.of.Columbia Florida Georgia Hawaii Idaho
+## 1         566        0                   97   16631   23008   1695   212
+## 2           0       79                    0    1100    2208    561   361
+## 3        1596      420                  276    9306    4242   2339  2775
+## 4         186        0                   69    1351    2683    241     0
+## 5        2932     1372                 6319   25354   14663  14239  3598
+## 6        2882        0                 1360   13546    6128   2795  1565
+##   Illinois Indiana Iowa Kansas Kentucky Louisiana Maine Maryland
+## 1     3707    1445  671   1261     1590      1508   151     1903
+## 2      715     126  142   1831      703       273   147        0
+## 3    13387    5443 2649   3383     1105       679   355     1467
+## 4     2594     335 1115    979     1356      3530   178      319
+## 5    21539    7073 3826   3293     4206      4933  2513    10637
+## 6    11369    2672 3243   4634     1736      3361   390     3467
+##   Massachusetts Michigan Minnesota Mississippi Missouri Montana Nebraska
+## 1           330     2195       122        7602     2746     294       33
+## 2            44      133       236          92      281     832        0
+## 3          4028     6525      5461         568     3708    2414     1312
+## 4           302      928       449        3699     6911      36     1411
+## 5         14062    11442     10897        3174     7580    1272     1876
+## 6          2196     4285      3725        1319     6246    1334     3050
+##   Nevada New.Hampshire New.Jersey New.Mexico New.York North.Carolina
+## 1    254             0        812        826     3047           6419
+## 2    534            32        270        198      910            714
+## 3   7350           224       3971       9453     3029           4605
+## 4   1194             0        250        225      590            939
+## 5  24656           889      11988       8087    40877          14268
+## 6   4366          1360       2731       5073     8612           6059
+##   North.Dakota Ohio Oklahoma Oregon Pennsylvania Rhode.Island
+## 1            0 2694     1169    498         1008            0
+## 2           58  100      806   1301          574            0
+## 3         1662 3839     7494   9279         4651           51
+## 4           39  192     5773    389         1146            0
+## 5         2664 9652     6023  18919        13090         2265
+## 6         1801 3674     3828   3473         4586           63
+##   South.Carolina South.Dakota Tennessee Texas  Utah Vermont Virginia
+## 1           2952           52      9960  7689   525       0     3535
+## 2            281          370       243  1675   725      86      462
+## 3           1768         2408      1834 14923  9979     817     8809
+## 4             70            0      2635 13487   619       0     1333
+## 5           5137         1333      6158 39109 11114     400    14348
+## 6           1945         1735      4035 20725  3642     647     7148
+##   Washington West.Virginia Wisconsin Wyoming
+## 1        677            42       874     539
+## 2       4888             0       260     291
+## 3      13897          1419      6736     925
+## 4       2257            75       539     178
+## 5      27973          1150      7354    2674
+## 6       4487           309      3243    3657
+head(states)
+##   ID    Region        States   Color
+## 1  1 Northeast   Connecticut #4D4D4D
+## 2  2 Northeast         Maine #4D4D4D
+## 3  3 Northeast Massachusetts #4D4D4D
+## 4  4 Northeast New Hampshire #4D4D4D
+## 5  5 Northeast  Rhode Island #4D4D4D
+## 6  6 Northeast       Vermont #4D4D4D</code></pre>
+<p>First we need to clean the data a bit, as theres some unwanted punctuations in the name of states. Cleaning can be done easily using the gsub function.</p>
 <pre class="r"><code>tmp = melt(dat)
 ## Using To as id variables
 colnames(tmp)[2] = &quot;From&quot;
 tmp$To = gsub(&quot;\\.&quot;,&quot; &quot;,tmp$To )
 tmp$From = gsub(&quot;\\.&quot;,&quot; &quot;,tmp$From )
 tmp$To = gsub(&quot; $&quot;,&quot;&quot;,tmp$To )
-tmp$From = gsub(&quot; $&quot;,&quot;&quot;,tmp$From )
-ID_From = NULL
+tmp$From = gsub(&quot; $&quot;,&quot;&quot;,tmp$From )</code></pre>
+<p>Then we can start building our diagram. We need to reshape the data back into a matrix using the package reshape, and then <em>tadaaaaa</em> its done!</p>
+<pre class="r"><code>ID_From = NULL
 ID_To = NULL
 for (i in 1:length(tmp$To)){
   ID_From = c(ID_From, states[states$States==(tmp[i,2]),1])

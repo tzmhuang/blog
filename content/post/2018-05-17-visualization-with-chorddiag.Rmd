@@ -37,18 +37,28 @@ library(dplyr)
 library(chorddiag)
 dat = read.csv("~/Desktop/post_data/migration_chorddiag/migration2016.csv")
 states = read.csv("~/Desktop/post_data/migration_chorddiag/states_chord.csv")
+```
+
+The data looks likes this:
+```{r, eval = T}
 head(dat)
 head(states)
 ```
 
 
-```{r, eval=T}
+
+First we need to clean the data a bit, as theres some unwanted punctuations in the name of states. Cleaning can be done easily using the gsub function.
+```{r, eval = T}
 tmp = melt(dat)
 colnames(tmp)[2] = "From"
 tmp$To = gsub("\\."," ",tmp$To )
 tmp$From = gsub("\\."," ",tmp$From )
 tmp$To = gsub(" $","",tmp$To )
 tmp$From = gsub(" $","",tmp$From )
+```
+
+Then we can start building our diagram. We need to reshape the data back into a matrix using the package reshape, and then *tadaaaaa* its done!
+```{r, eval=T}
 ID_From = NULL
 ID_To = NULL
 for (i in 1:length(tmp$To)){
