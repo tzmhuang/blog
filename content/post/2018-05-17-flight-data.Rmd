@@ -1,0 +1,113 @@
+---
+title: "Flights Data Visulization"
+author: "Huang Zanming"
+date: '2018-05-17'
+coverImage: http://d1u9biwaxjngwg.cloudfront.net/cover-image-showcase/city.jpg
+slug: flight-data
+tags: Visualization
+categories: R
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE)
+```
+
+```{r packageloding, include=F}
+library(maps)
+library(geosphere)
+library(ggplot2)
+library(ggmap)
+```
+
+```{r, include=FALSE}
+olds = setwd("~/Desktop/post_data")
+airports <- read.csv("flight_data/airports.dat", header=FALSE, stringsAsFactors=FALSE)
+colnames(airports) <- c("airport_id", "name", "city", "country", "IATA_FAA", "ICAO", "latitude", "longitude", "altitude", "timezone", "DST")
+airports <- subset(airports, IATA_FAA != '')
+flights <- read.csv("flight_data/routes.dat", header=FALSE, stringsAsFactors=FALSE)
+colnames(flights) <- c("airline", "airline_id", "source_air", "source_air_id", "dest_air", "dest_air_id","code_share", "stops", "equipment")
+flights_sub = subset(flights,flights$airline == "CX"|flights$airline == "EK"|flights$airline == "DL" )
+setwd(olds)
+```
+
+
+Lets visualize the flight routes data from openflights.org. For this I used the airports.dat and routes.dat, one contains information of airports around the world and the other contains flights data of Jan 2012. This was done as an assignment for my big data analytics course in HKU.
+
+Due to limited computation power only flight routes from 3 airlines are visualized, but it can be scaled up easily. The airlines im visualizing are Cathay, Emirates and Delta, with the flights from Cathay shown in green, Emirates in red and Delta in blue.
+
+####Flight visulization with ggplot2
+
+```{r, eval = F}
+library(maps)
+library(geosphere)
+library(ggplot2)
+library(ggmap)
+setwd("dir/to/data")
+airports <- read.csv("airports.dat", header=FALSE, stringsAsFactors=FALSE)
+colnames(airports) <- c("airport_id", "name", "city", "country", "IATA_FAA", "ICAO", "latitude", "longitude", "altitude", "timezone", "DST")
+airports <- subset(airports, IATA_FAA != '')
+flights <- read.csv("routes.dat", header=FALSE, stringsAsFactors=FALSE)
+colnames(flights) <- c("airline", "airline_id", "source_air", "source_air_id", "dest_air", "dest_air_id","code_share", "stops", "equipment")
+flights_sub = subset(flights,flights$airline == "CX"|flights$airline == "EK"|flights$airline == "DL" )
+```
+
+```{r}
+# Initialize ggplot object
+mp <- NULL
+# Initialize the world map
+map1 <- borders("world", colour="gray50", fill="gray50")
+map1$data = subset(map1$data, region !="Antarctica")
+mp <- ggplot() + map1
+col = data.frame(c("CX","EK","DL"),c(1,2,3))
+# Extract all flights
+gp <- 1
+all_inter <- NULL
+for (j in 1:length(flights_sub$airline)) {    
+  cond1 <- airports$IATA_FAA == flights_sub[j,]$source_air
+  cond2 <- airports$IATA_FAA == flights_sub[j,]$dest_air
+  if ((sum(cond1) > 0) & (sum(cond2) > 0)) {
+    # Extract airports info of a flight
+    air1 <- airports[cond1,] # starting airport
+    air2 <- airports[cond2,] # ending airport
+    # Generate the path to connect source and destination airports
+    inter <- gcIntermediate(c(air1[1,]$long, air1[1,]$lat), c(air2[1,]$long, air2[1,]$lat), n=100, addStartEnd=TRUE)
+    # When source/destination airports located on different side of Greenwich, split the path into two
+    if (air1[1,]$long*air2[1,]$long < 0) {
+      tmp_inter <- cbind(inter,rep(gp,nrow(inter)),rep(col[col[,1] == flights_sub[j,]$airline,2],nrow(inter)))
+      tmp_inter[inter[,'lon']<=0,3] <- gp + 1
+      all_inter <- rbind(all_inter, tmp_inter )
+      gp <- gp + 2
+    } else {
+      all_inter <- rbind(all_inter, cbind(inter,rep(gp,nrow(inter)),rep(col[col[,1] == flights_sub[j,]$airline,2],nrow(inter))))
+      gp <- gp + 1
+    }
+  }
+}
+
+mp = mp + geom_line(aes(x=all_inter[,1], y=all_inter[,2], group=all_inter[,3],color=as.factor(all_inter[,4])), lwd=0.1)+scale_color_manual(values = c( "1" = "#41c679","2" = "#ff5b5b","3" = "#3f8cff"),guide = FALSE) 
+
+mp
+```
+
+####Interactive visualization with package threejs
+```{r}
+library(threejs)
+color = data.frame(rbind("CX","EK","DL"),rbind("#41c679","#ff5b5b","#3f8cff"))
+df = NULL
+col = NULL
+for (j in 1:length(flights_sub$airline)) {    
+  cond1 <- airports$IATA_FAA == flights_sub[j,]$source_air
+  cond2 <- airports$IATA_FAA == flights_sub[j,]$dest_air
+  if ((sum(cond1) > 0) & (sum(cond2) > 0)) {
+    # Extract airports info of a flight
+    air1 <- airports[cond1,] # starting airport
+    air2 <- airports[cond2,] # ending airport
+  }
+  df = rbind(df,cbind(air1$latitude, air1$longitude,air2$latitude,air2$longitude))
+  col = c(col, as.character(color[color[,1]==flights_sub[j,1],2]) )
+}
+
+globejs(long = airports$longitude , lat = airports$latitude, arcs = df, arcsColor = col , color = "white", value = 2)
+```
+
+
