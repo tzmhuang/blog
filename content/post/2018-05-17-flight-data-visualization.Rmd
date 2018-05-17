@@ -1,10 +1,12 @@
 ---
-title: "Flights Data Visulization"
-author: "Huang Zanming"
+title: Flight Data Visualization
+author: Huang Zanming
 date: '2018-05-17'
-slug: flight-data
-tags: Visualization
-categories: R
+slug: flight-data-visualization
+categories:
+  - R
+tags:
+  - visualization
 ---
 
 ```{r setup, include=FALSE}
@@ -108,5 +110,3 @@ for (j in 1:length(flights_sub$airline)) {
 
 globejs(long = airports$longitude , lat = airports$latitude, arcs = df, arcsColor = col , color = "white", value = 2)
 ```
-
-

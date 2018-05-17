@@ -1,10 +1,12 @@
 ---
-title: "Flights Data Visulization"
-author: "Huang Zanming"
+title: Flight Data Visualization
+author: Huang Zanming
 date: '2018-05-17'
-slug: flight-data
-tags: Visualization
-categories: R
+slug: flight-data-visualization
+categories:
+  - R
+tags:
+  - visualization
 ---
 
 <script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
@@ -65,7 +67,7 @@ for (j in 1:length(flights_sub$airline)) {
 mp = mp + geom_line(aes(x=all_inter[,1], y=all_inter[,2], group=all_inter[,3],color=as.factor(all_inter[,4])), lwd=0.1)+scale_color_manual(values = c( &quot;1&quot; = &quot;#41c679&quot;,&quot;2&quot; = &quot;#ff5b5b&quot;,&quot;3&quot; = &quot;#3f8cff&quot;),guide = FALSE) 
 
 mp</code></pre>
-<p><img src="/post/2018-05-17-flight-data_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="/post/2018-05-17-flight-data-visualization_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 </div>
 <div id="interactive-visualization-with-package-threejs" class="section level4">
 <h4>Interactive visualization with package threejs</h4>
