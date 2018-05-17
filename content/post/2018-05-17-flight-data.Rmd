@@ -2,7 +2,6 @@
 title: "Flights Data Visulization"
 author: "Huang Zanming"
 date: '2018-05-17'
-coverImage: http://d1u9biwaxjngwg.cloudfront.net/cover-image-showcase/city.jpg
 slug: flight-data
 tags: Visualization
 categories: R
